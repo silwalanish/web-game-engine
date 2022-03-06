@@ -3,14 +3,13 @@ import { uuidv4 } from "../../utils/random.js";
 import { UniformCache } from "./UniformCache.js";
 import { UniformLoader } from "./UniformLoader.js";
 import { ShaderCompiler } from "./ShaderCompiler.js";
-import { ShaderSourceGenerator } from "./ShaderSourceGenerator.js";
+import { ShaderPreProcessor } from "./ShaderPreProcessor.js";
 
 export class Shader {
-  constructor(attribsMeta, attribsMap, uniformsMeta) {
+  constructor(uniformsMeta, attribsMeta) {
     this._id = uuidv4();
     this._webglShaderId = null;
     this._attribsMeta = attribsMeta;
-    this._attribsMap = attribsMap;
     this._uniformsMeta = uniformsMeta;
     this._uniformsLoader = new UniformLoader();
     this._uniformsCache = new UniformCache(this._uniformsMeta);
@@ -32,6 +31,11 @@ export class Shader {
     GL.useProgram(null);
   }
 
+  cleanUp() {
+    GL.deleteProgram(this._webglShaderId);
+    this._webglShaderId = null;
+  }
+
   loadUniforms(uniforms) {
     for (let [name, _] of this._uniformsMeta) {
       if (uniforms[name] == null) {
@@ -41,7 +45,7 @@ export class Shader {
     }
   }
 
-  loadUniformsToGPU(){
+  loadUniformsToGPU() {
     this._uniformsLoader.loadToGPU(this._uniformsCache, this._uniformsMeta);
   }
 
@@ -50,9 +54,8 @@ export class Shader {
     sourceMap.set("vertex_source", this.vertex());
     sourceMap.set("fragment_source", this.fragment());
 
-    let shaderSource = new ShaderSourceGenerator().generate({
+    let shaderSource = new ShaderPreProcessor().generate({
       sourceMap,
-      attribsMap: this._attribsMap,
       attribsMeta: this._attribsMeta,
       uniformsMeta: this._uniformsMeta,
     });

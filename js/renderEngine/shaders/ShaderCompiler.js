@@ -1,5 +1,5 @@
-import { GL } from '../GL.js';
-import { isNonEmptyString } from '../../utils/string.js';
+import { GL } from "../GL.js";
+import { isNonEmptyString } from "../../utils/string.js";
 
 export class ShaderCompiler {
   static _createShader(type, source) {
@@ -14,7 +14,11 @@ export class ShaderCompiler {
     let error = GL.getShaderInfoLog(shader);
     GL.deleteShader(shader);
 
-    throw new Error('Failed to compile shader: ' + error);
+    throw new Error(
+      `Failed to compile shader:
+${error}
+Source:
+${source}`);
   }
 
   static _createProgram(vertexShader, fragmentShader) {
@@ -30,7 +34,7 @@ export class ShaderCompiler {
     let error = GL.getProgramInfoLog(program);
     GL.deleteProgram(program);
 
-    throw new Error('Failed to link shader program: ' + error);
+    throw new Error("Failed to link shader program: " + error);
   }
 
   static compile(shaderSource) {
@@ -39,11 +43,11 @@ export class ShaderCompiler {
     }
 
     if (!isNonEmptyString(shaderSource.vertex)) {
-      throw new Error('Invalid vertex shader source.');
+      throw new Error("Invalid vertex shader source.");
     }
 
     if (!isNonEmptyString(shaderSource.fragment)) {
-      throw new Error('Invalid fragment shader source.');
+      throw new Error("Invalid fragment shader source.");
     }
 
     let vertexShader = ShaderCompiler._createShader(

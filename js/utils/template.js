@@ -1,5 +1,7 @@
 import { isNonEmptyString } from "./string.js";
 
+const MAX_ITERATION = 50;
+
 function keyExists(object, key) {
   if (object instanceof Map) {
     return object.has(key);
@@ -16,7 +18,7 @@ function getValue(object, key) {
   return object[key].trim();
 }
 
-export function renderEngine(baseTemplate, regex, processMatch) {
+export function templateEngine(baseTemplate, regex, processMatch) {
   if (!isNonEmptyString(baseTemplate)) {
     throw new Error("baseTemplate is required.");
   }
@@ -29,10 +31,20 @@ export function renderEngine(baseTemplate, regex, processMatch) {
     throw new Error("processMatch is not a function.");
   }
 
-  let renderedString = baseTemplate;
+  let iterationCount = 0;
 
-  for (let match of baseTemplate.matchAll(regex)) {
-    renderedString = renderedString.replaceAll(match[0], processMatch(match));
+  let renderedString = baseTemplate;
+  let matches = [...renderedString.matchAll(regex)];
+  while (matches.length > 0) {
+    for (let match of matches) {
+      renderedString = renderedString.replaceAll(match[0], processMatch(match));
+    }
+
+    matches = [...renderedString.matchAll(regex)];
+
+    if (iterationCount++ > MAX_ITERATION) {
+      throw new Error("Max iteration reached.");
+    }
   }
 
   return renderedString;
@@ -55,12 +67,12 @@ export function render(baseTemplate, data) {
     console.warn("Provide data as a Map.");
   }
 
-  return renderEngine(baseTemplate, /{(?<key>.*?)}/g,  (match) => {
+  return templateEngine(baseTemplate, /{(?<key>.*?)}/g, (match) => {
     let key = match.groups.key.trim();
     if (keyExists(data, key)) {
       return getValue(data, key);
     }
 
-    return match[0];
+    throw new Error(`${key} doesn't exists in the data.`);
   });
 }
