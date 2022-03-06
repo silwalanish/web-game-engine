@@ -1,8 +1,10 @@
 import { GL } from "./GL.js";
+import { TextureLoader } from "./TextureLoader.js";
 
 export class Renderer {
   constructor() {
     this._shaderCache = new Map();
+    this.textureLoader = new TextureLoader();
   }
 
   prepare() {
@@ -13,13 +15,14 @@ export class Renderer {
   _prepareMaterial(material) {
     let shader;
     if (!this._shaderCache.has(material.id)) {
-      shader = new material.shaderClass(material.meta);
+      shader = new material.shaderClass(this, material.meta);
       shader.compile();
 
       this._shaderCache.set(material.id, shader);
     }
 
     shader = this._shaderCache.get(material.id);
+    shader.reset();
     shader.loadMaterial(material);
 
     return shader;
@@ -30,10 +33,9 @@ export class Renderer {
 
     shader.start();
     shader.loadUniformsToGPU();
+    shader.bindTextures();
     GL.bindVertexArray(model.VAO);
-    GL.enableVertexAttribArray(0);
     GL.drawElements(GL.TRIANGLES, model.vertexCount, GL.UNSIGNED_INT, 0);
-    GL.disableVertexAttribArray(0);
     GL.bindVertexArray(null);
     shader.stop();
   }

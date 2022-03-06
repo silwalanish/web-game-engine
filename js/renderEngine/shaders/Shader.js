@@ -6,8 +6,11 @@ import { ShaderCompiler } from "./ShaderCompiler.js";
 import { ShaderPreProcessor } from "./ShaderPreProcessor.js";
 
 export class Shader {
-  constructor(uniformsMeta, attribsMeta) {
+  constructor(renderer, uniformsMeta, attribsMeta) {
     this._id = uuidv4();
+    this._textureBindCount = 0;
+    this._textures = new Map();
+    this._renderer = renderer;
     this._webglShaderId = null;
     this._attribsMeta = attribsMeta;
     this._uniformsMeta = uniformsMeta;
@@ -21,6 +24,11 @@ export class Shader {
 
   fragment() {
     throw new Error("fragment is not implemented!");
+  }
+
+  reset() {
+    this._textureBindCount = 0;
+    this._textures.clear();
   }
 
   start() {
@@ -37,11 +45,34 @@ export class Shader {
   }
 
   loadUniforms(uniforms) {
-    for (let [name, _] of this._uniformsMeta) {
+    for (let [name, meta] of this._uniformsMeta) {
       if (uniforms[name] == null) {
         continue;
       }
-      this._uniformsCache.setValue(name, uniforms[name]);
+
+      let value = uniforms[name];
+      if (meta.type === "sampler2D") {
+        if (!this._textures.has(value.id)) {
+          this._textures.set(value.id, {
+            index: this._textureBindCount,
+            webGLTextureId:
+              this._renderer.textureLoader.loadToWebGLTexture(value),
+          });
+
+          value = this._textureBindCount++;
+        } else {
+          value = this._textures.get(value.id).index;
+        }
+      }
+
+      this._uniformsCache.setValue(name, value);
+    }
+  }
+
+  bindTextures() {
+    for (let [_, { index, webGLTextureId }] of this._textures) {
+      GL.activeTexture(GL.TEXTURE0 + index);
+      GL.bindTexture(GL.TEXTURE_2D, webGLTextureId);
     }
   }
 

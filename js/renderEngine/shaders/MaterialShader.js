@@ -1,8 +1,8 @@
 import { Shader } from "./Shader.js";
 
 export class MaterialShader extends Shader {
-  constructor(materialMeta) {
-    super(materialMeta);
+  constructor(renderer, materialMeta) {
+    super(renderer, materialMeta);
     this._materialMeta = materialMeta;
   }
 

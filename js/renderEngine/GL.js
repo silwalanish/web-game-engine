@@ -7,4 +7,7 @@ export function initializeRenderingContext() {
     if (!GL) {
         throw new Error("The browser doesn't support webgl2.");
     }
+
+    // Images are flipped in WebGL.
+    GL.pixelStorei(GL.UNPACK_FLIP_Y_WEBGL, true);
 }

@@ -1,10 +1,11 @@
+import _ from 'https://cdn.skypack.dev/lodash';
 import { UniformMeta } from "../renderEngine/shaders/UniformMeta.js";
 
 export class MaterialMeta extends UniformMeta {}
 
 export class MetaValidator {
   static _verifyDefaultValue(name, meta) {
-    if (!meta.defaultValue && meta.isRequired) {
+    if (_.isNil(meta.defaultValue) && meta.isRequired) {
       throw new Error(
         `defaultValue is required for ${name} as it is a required property.`
       );

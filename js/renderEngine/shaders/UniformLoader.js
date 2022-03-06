@@ -23,18 +23,29 @@ export class UniformLoader {
     );
   }
 
+  _loadInt(name, value) {
+    GL.uniform1i(
+      this._uniformLocationsCache.getLocation(name),
+      value
+    );
+  }
+
   loadToGPU(uniforms, metas) {
     for (let [name, meta] of metas) {
       if (uniforms.hasChanged(name)) {
         switch (meta.type) {
           case "vec3":
             this._loadVec3(name, uniforms.getValue(name));
-            uniforms.markAsLoaded(name);
+            break;
+
+          case "sampler2D":
+            this._loadInt(name, uniforms.getValue(name));
             break;
 
           default:
             break;
         }
+        uniforms.markAsLoaded(name);
       }
     }
   }
