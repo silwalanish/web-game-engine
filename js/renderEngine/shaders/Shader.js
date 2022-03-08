@@ -12,8 +12,8 @@ export class Shader {
     this._textures = new Map();
     this._renderer = renderer;
     this._webglShaderId = null;
-    this._attribsMeta = attribsMeta;
-    this._uniformsMeta = uniformsMeta;
+    this._attribsMeta = attribsMeta || new Map();
+    this._uniformsMeta = uniformsMeta || new Map();
     this._uniformsLoader = new UniformLoader();
     this._uniformsCache = new UniformCache(this._uniformsMeta);
   }

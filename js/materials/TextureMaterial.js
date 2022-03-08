@@ -14,7 +14,7 @@ export class TextureMaterial extends Material {
       #include <vertex_uv_attrib>
 
       void vertex() {
-        gl_Position = vec4(POSITION, 1.0);
+        gl_Position = modelMat * vec4(POSITION, 1.0);
         FRAG_UV = UV;
       }
       `;

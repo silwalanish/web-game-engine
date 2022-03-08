@@ -5,7 +5,11 @@ import { Renderer } from "./renderEngine/Renderer.js";
 import { DisplayManager } from "./core/DisplayManager.js";
 import { TextureMaterial } from "./materials/TextureMaterial.js";
 import { initializeRenderingContext } from "./renderEngine/GL.js";
-import { MATERIAL_COMPONENT, MESH_COMPONENT } from "./core/Components.js";
+import {
+  MATERIAL_COMPONENT,
+  MESH_COMPONENT,
+  TRANSFORM_COMPONENT,
+} from "./core/Components.js";
 
 window.onload = async () => {
   DisplayManager.createDisplay();
@@ -26,6 +30,7 @@ window.onload = async () => {
   );
 
   function gameloop() {
+    rectangle.getComponent(TRANSFORM_COMPONENT).rotation[2] += 1;
     rectangle.update();
 
     renderer.prepare();

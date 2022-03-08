@@ -1,5 +1,5 @@
-import { mergeMap } from "../../utils/map.js";
 import { isNonEmptyString } from "../../utils/string.js";
+import { mergeMap, mergeMapInto } from "../../utils/map.js";
 import { SHADER_CHUNKS } from "./shaderChunks/shaderChunks.js";
 import { render, templateEngine } from "../../utils/template.js";
 import { FRAGMENT_SHADER, VERTEX_SHADER } from "./ShaderTypes.js";
@@ -200,7 +200,7 @@ export class ShaderPreProcessor {
 
     shaderSource = this._includeExpander.expand(shaderSource, SHADER_CHUNKS);
 
-    let attribsMeta = mergeMap(
+    let attribsMeta = mergeMapInto(
       this._includeExpander.attribsMeta,
       params.attribsMeta
     );
@@ -215,7 +215,7 @@ export class ShaderPreProcessor {
       shaderType
     );
 
-    let uniformsMeta = mergeMap(
+    let uniformsMeta = mergeMapInto(
       this._includeExpander.uniformsMeta,
       params.uniformsMeta
     );

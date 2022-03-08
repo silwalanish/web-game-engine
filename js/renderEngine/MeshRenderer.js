@@ -1,5 +1,6 @@
 import { GL } from "./GL.js";
 import { ModelLoader } from "./ModelLoader.js";
+import { MODEL_MATRIX_UNIFORM } from "./shaders/ShaderUniforms.js";
 import { TextureLoader } from "./TextureLoader.js";
 
 export class MeshRenderer {
@@ -29,9 +30,18 @@ export class MeshRenderer {
     return shader;
   }
 
-  render(mesh, material) {
+  _prepareUniforms(shader, transform) {
+    let uniforms = {
+      [MODEL_MATRIX_UNIFORM]: transform.getModelMatrix(),
+    };
+
+    shader.loadUniforms(uniforms);
+  }
+
+  render(mesh, material, transform) {
     let model = this._prepareMesh(mesh);
     let shader = this._prepareMaterial(material);
+    this._prepareUniforms(shader, transform);
 
     shader.start();
     shader.loadUniformsToGPU();

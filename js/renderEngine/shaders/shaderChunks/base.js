@@ -6,11 +6,13 @@ export default new Map([
     {
       source: `
         #attribute POSITION
+
+        #uniform modelMat
       `,
       attribsMeta: new Map([
         ["POSITION", { type: "vec3", location: POSITION_ATTRIB_LOCATION }],
       ]),
-      uniformsMeta: null,
+      uniformsMeta: new Map([["modelMat", { type: "mat4" }]]),
     },
   ],
   [
