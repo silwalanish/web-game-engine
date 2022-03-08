@@ -1,9 +1,11 @@
 import { Mesh } from "./core/Mesh.js";
 import { Texture } from "./core/Texture.js";
+import { GameObject } from "./core/GameObject.js";
 import { Renderer } from "./renderEngine/Renderer.js";
 import { DisplayManager } from "./core/DisplayManager.js";
 import { TextureMaterial } from "./materials/TextureMaterial.js";
 import { initializeRenderingContext } from "./renderEngine/GL.js";
+import { MATERIAL_COMPONENT, MESH_COMPONENT } from "./core/Components.js";
 
 window.onload = async () => {
   DisplayManager.createDisplay();
@@ -11,16 +13,23 @@ window.onload = async () => {
 
   let renderer = new Renderer();
 
-  let material = new TextureMaterial(
-    await Texture.loadFromURL("assets/textures/texture.jpg")
+  let rectangle = new GameObject();
+  rectangle.addComponent(
+    MESH_COMPONENT,
+    await Mesh.loadFromURL("assets/meshes/rectangle.mesh")
+  );
+  rectangle.addComponent(
+    MATERIAL_COMPONENT,
+    new TextureMaterial(
+      await Texture.loadFromURL("assets/textures/texture.jpg")
+    )
   );
 
-  let mesh = await Mesh.loadFromURL("assets/meshes/rectangle.mesh");
-
   function gameloop() {
-    renderer.prepare();
+    rectangle.update();
 
-    renderer.render(mesh, material);
+    renderer.prepare();
+    renderer.render(rectangle);
 
     window.requestAnimationFrame(gameloop);
   }

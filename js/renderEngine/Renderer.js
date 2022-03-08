@@ -1,12 +1,10 @@
 import { GL } from "./GL.js";
-import { ModelLoader } from "./ModelLoader.js";
-import { TextureLoader } from "./TextureLoader.js";
+import { MeshRenderer } from "./MeshRenderer.js";
+import { MATERIAL_COMPONENT, MESH_COMPONENT } from "../core/Components.js";
 
 export class Renderer {
   constructor() {
-    this._shaderCache = new Map();
-    this.modelLoader = new ModelLoader();
-    this.textureLoader = new TextureLoader();
+    this._meshRenderer = new MeshRenderer();
   }
 
   prepare() {
@@ -14,36 +12,15 @@ export class Renderer {
     GL.clear(GL.COLOR_BUFFER_BIT);
   }
 
-  _prepareMesh(mesh) {
-    return this.modelLoader.loadMeshToModel(mesh);
-  }
-
-  _prepareMaterial(material) {
-    let shader;
-    if (!this._shaderCache.has(material.id)) {
-      shader = new material.shaderClass(this, material.meta);
-      shader.compile();
-
-      this._shaderCache.set(material.id, shader);
+  render(gameObject) {
+    if (
+      gameObject.hasComponent(MESH_COMPONENT) &&
+      gameObject.hasComponent(MATERIAL_COMPONENT)
+    ) {
+      this._meshRenderer.render(
+        gameObject.getComponent(MESH_COMPONENT),
+        gameObject.getComponent(MATERIAL_COMPONENT)
+      );
     }
-
-    shader = this._shaderCache.get(material.id);
-    shader.reset();
-    shader.loadMaterial(material);
-
-    return shader;
-  }
-
-  render(mesh, material) {
-    let model = this._prepareMesh(mesh);
-    let shader = this._prepareMaterial(material);
-
-    shader.start();
-    shader.loadUniformsToGPU();
-    shader.bindTextures();
-    GL.bindVertexArray(model.VAO);
-    GL.drawElements(GL.TRIANGLES, model.vertexCount, GL.UNSIGNED_INT, 0);
-    GL.bindVertexArray(null);
-    shader.stop();
   }
 }
