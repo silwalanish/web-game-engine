@@ -1,15 +1,21 @@
 import { GL } from "./GL.js";
+import { ModelLoader } from "./ModelLoader.js";
 import { TextureLoader } from "./TextureLoader.js";
 
 export class Renderer {
   constructor() {
     this._shaderCache = new Map();
+    this.modelLoader = new ModelLoader();
     this.textureLoader = new TextureLoader();
   }
 
   prepare() {
     GL.clearColor(0.0, 0.0, 0.0, 1.0);
     GL.clear(GL.COLOR_BUFFER_BIT);
+  }
+
+  _prepareMesh(mesh) {
+    return this.modelLoader.loadMeshToModel(mesh);
   }
 
   _prepareMaterial(material) {
@@ -28,7 +34,8 @@ export class Renderer {
     return shader;
   }
 
-  render(model, material) {
+  render(mesh, material) {
+    let model = this._prepareMesh(mesh);
     let shader = this._prepareMaterial(material);
 
     shader.start();

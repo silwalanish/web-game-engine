@@ -1,4 +1,4 @@
-import { DisplayManager } from "../DisplayManager.js";
+import { DisplayManager } from "../core/DisplayManager.js";
 
 export let GL = null;
 

@@ -1,4 +1,4 @@
-import { uuidv4 } from "./utils/random.js";
+import { uuidv4 } from "../utils/random.js";
 
 export class Texture {
   static TEXTURE_CACHE = new Map();

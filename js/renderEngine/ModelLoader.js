@@ -1,3 +1,5 @@
+import _ from "https://cdn.skypack.dev/lodash";
+
 import { GL } from "./GL.js";
 import { RawModel } from "./RawModel.js";
 import {
@@ -7,11 +9,14 @@ import {
 
 export class ModelLoader {
   constructor() {
+    this._modelCache = new Map();
     this.VAOS = [];
     this.VBOS = [];
   }
 
   cleanUp() {
+    this._modelCache.clear();
+
     this.VAOS.forEach((vao) => {
       GL.deleteVertexArray(vao);
     });
@@ -19,6 +24,25 @@ export class ModelLoader {
     this.VBOS.forEach((vbo) => {
       GL.deleteBuffer(vbo);
     });
+  }
+
+  loadMeshToModel(mesh) {
+    if (!this._modelCache.has(mesh.id)) {
+      let positions = [];
+      let uvs = [];
+
+      for (let vertex of mesh.vertices) {
+        positions.push(...vertex.position);
+        uvs.push(...vertex.uv);
+      }
+
+      this._modelCache.set(
+        mesh.id,
+        this.loadToVAO(positions, uvs, _.flatten(mesh.faces))
+      );
+    }
+
+    return this._modelCache.get(mesh.id);
   }
 
   loadToVAO(positions, uvs, indices) {
