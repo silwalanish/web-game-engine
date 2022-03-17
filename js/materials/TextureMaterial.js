@@ -8,18 +8,6 @@ export class TextureMaterial extends Material {
   ]);
 
   static Shader = class extends MaterialShader {
-    vertex() {
-      return `
-      #include <vertex_base_attrib>
-      #include <vertex_uv_attrib>
-
-      void vertex() {
-        gl_Position = modelMat * vec4(POSITION, 1.0);
-        FRAG_UV = UV;
-      }
-      `;
-    }
-
     fragment() {
       return `
       #include <fragment_base_attrib>

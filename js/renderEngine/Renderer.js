@@ -7,8 +7,8 @@ import {
 } from "../core/Components.js";
 
 export class Renderer {
-  constructor() {
-    this._meshRenderer = new MeshRenderer();
+  constructor(projectionMatrix) {
+    this._meshRenderer = new MeshRenderer(projectionMatrix);
   }
 
   prepare() {

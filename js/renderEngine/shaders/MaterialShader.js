@@ -9,4 +9,16 @@ export class MaterialShader extends Shader {
   loadMaterial(material) {
     this.loadUniforms(material);
   }
+
+  vertex() {
+    return `
+    #include <vertex_base_attrib>
+    #include <vertex_uv_attrib>
+
+    void vertex() {
+      gl_Position = projMat * modelMat * vec4(POSITION, 1.0);
+      FRAG_UV = UV;
+    }
+    `;
+  }
 }

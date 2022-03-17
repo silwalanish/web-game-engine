@@ -8,16 +8,6 @@ export class ColorMaterial extends Material {
   ]);
 
   static Shader = class extends MaterialShader {
-    vertex() {
-      return `
-      #include <vertex_base_attrib>
-
-      void vertex() {
-        gl_Position = modelMat * vec4(POSITION, 1.0);
-      }
-      `;
-    }
-
     fragment() {
       return `
       #include <fragment_base_attrib>

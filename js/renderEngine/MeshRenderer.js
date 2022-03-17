@@ -1,10 +1,14 @@
 import { GL } from "./GL.js";
 import { ModelLoader } from "./ModelLoader.js";
-import { MODEL_MATRIX_UNIFORM } from "./shaders/ShaderUniforms.js";
 import { TextureLoader } from "./TextureLoader.js";
+import {
+  MODEL_MATRIX_UNIFORM,
+  PROJECTION_MATRIX_UNIFORM,
+} from "./shaders/ShaderUniforms.js";
 
 export class MeshRenderer {
-  constructor() {
+  constructor(projectionMatrix) {
+    this._projectionMatrix = projectionMatrix;
     this._shaderCache = new Map();
     this.modelLoader = new ModelLoader();
     this.textureLoader = new TextureLoader();
@@ -33,6 +37,7 @@ export class MeshRenderer {
   _prepareUniforms(shader, transform) {
     let uniforms = {
       [MODEL_MATRIX_UNIFORM]: transform.getModelMatrix(),
+      [PROJECTION_MATRIX_UNIFORM]: this._projectionMatrix,
     };
 
     shader.loadUniforms(uniforms);

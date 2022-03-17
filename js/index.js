@@ -1,3 +1,5 @@
+import { glMatrix, mat4 } from "https://cdn.skypack.dev/gl-matrix";
+
 import { Mesh } from "./core/Mesh.js";
 import { Texture } from "./core/Texture.js";
 import { GameObject } from "./core/GameObject.js";
@@ -11,11 +13,22 @@ import {
   TRANSFORM_COMPONENT,
 } from "./core/Components.js";
 
+const WIDTH = 750;
+const HEIGHT = 600;
+const FOV = 60;
+
 window.onload = async () => {
-  DisplayManager.createDisplay();
+  DisplayManager.createDisplay(WIDTH, HEIGHT);
   initializeRenderingContext();
 
-  let renderer = new Renderer();
+  let perspectiveMat = mat4.perspective(
+    mat4.create(),
+    glMatrix.toRadian(FOV),
+    WIDTH / HEIGHT,
+    0.001,
+    1000
+  );
+  let renderer = new Renderer(perspectiveMat);
 
   let cube = new GameObject();
   cube.addComponent(
@@ -28,6 +41,8 @@ window.onload = async () => {
       await Texture.loadFromURL("assets/textures/texture.jpg")
     )
   );
+
+  cube.getComponent(TRANSFORM_COMPONENT).position[2] -= 2.0;
 
   function gameloop() {
     cube.getComponent(TRANSFORM_COMPONENT).rotation[0] += 1;

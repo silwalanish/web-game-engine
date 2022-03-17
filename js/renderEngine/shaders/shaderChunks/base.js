@@ -1,4 +1,8 @@
 import { POSITION_ATTRIB_LOCATION } from "../ShaderAttributes.js";
+import {
+  MODEL_MATRIX_UNIFORM,
+  PROJECTION_MATRIX_UNIFORM,
+} from "../ShaderUniforms.js";
 
 export default new Map([
   [
@@ -7,12 +11,16 @@ export default new Map([
       source: `
         #attribute POSITION
 
-        #uniform modelMat
+        #uniform ${PROJECTION_MATRIX_UNIFORM}
+        #uniform ${MODEL_MATRIX_UNIFORM}
       `,
       attribsMeta: new Map([
         ["POSITION", { type: "vec3", location: POSITION_ATTRIB_LOCATION }],
       ]),
-      uniformsMeta: new Map([["modelMat", { type: "mat4" }]]),
+      uniformsMeta: new Map([
+        [PROJECTION_MATRIX_UNIFORM, { type: "mat4" }],
+        [MODEL_MATRIX_UNIFORM, { type: "mat4" }],
+      ]),
     },
   ],
   [

@@ -1,19 +1,17 @@
 export class DisplayManager {
   static CANVAS = null;
-  static WIDTH = 750;
-  static HEIGHT = 600;
 
-  static _updateDimensions() {
-    DisplayManager.CANVAS.width = this.WIDTH;
-    DisplayManager.CANVAS.height = this.HEIGHT;
+  static _updateDimensions(width, height) {
+    DisplayManager.CANVAS.width = width;
+    DisplayManager.CANVAS.height = height;
   }
 
-  static createDisplay() {
+  static createDisplay(width, height) {
     if (!DisplayManager.CANVAS) {
       DisplayManager.CANVAS = document.createElement("canvas");
       document.body.appendChild(DisplayManager.CANVAS);
     }
 
-    DisplayManager._updateDimensions();
+    DisplayManager._updateDimensions(width, height);
   }
 }
