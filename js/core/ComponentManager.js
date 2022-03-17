@@ -22,6 +22,7 @@ export class ComponentManager {
   addComponent(key, component) {
     if (this._components.has(key)) {
       this._components.get(key).push(component);
+      return;
     }
 
     this._components.set(key, [component]);
