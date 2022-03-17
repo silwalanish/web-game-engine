@@ -1,4 +1,5 @@
-import { MapWithDefault } from "../utils/MapWithDefault.js";
+import { BaseComponent } from "./BaseComponent.js";
+import { MapWithDefault } from "../../utils/MapWithDefault.js";
 
 export class ComponentManager {
   constructor() {
@@ -8,9 +9,12 @@ export class ComponentManager {
   update() {
     for (let [_, components] of this._components) {
       for (let component of components) {
-        if (typeof component.update === "function") {
-          component.update();
+        if (component.parent !== this) {
+          // Remove the component if it's parent has been updated.
+          components.splice(components.indexOf(component), 1);
+          continue;
         }
+        component.update();
       }
     }
   }
@@ -20,6 +24,11 @@ export class ComponentManager {
   }
 
   addComponent(key, component) {
+    if (!(component instanceof BaseComponent)) {
+      throw new TypeError("component must extend from BaseComponent.");
+    }
+
+    component.parent = this;
     if (this._components.has(key)) {
       this._components.get(key).push(component);
       return;

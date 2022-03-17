@@ -1,58 +1,40 @@
-import { glMatrix, mat4 } from "https://cdn.skypack.dev/gl-matrix";
-
 import { Mesh } from "./core/Mesh.js";
 import { Camera } from "./core/Camera.js";
 import { Texture } from "./core/Texture.js";
 import { GameObject } from "./core/GameObject.js";
 import { Renderer } from "./renderEngine/Renderer.js";
 import { DisplayManager } from "./core/DisplayManager.js";
-import { MovementControl } from "./core/MovementControl.js";
 import { TextureMaterial } from "./materials/TextureMaterial.js";
 import { initializeRenderingContext } from "./renderEngine/GL.js";
+import { MovementControl } from "./core/components/MovementControl.js";
 import {
-  MATERIAL_COMPONENT,
   MESH_COMPONENT,
   MOVEMENT_COMPONENT,
   TRANSFORM_COMPONENT,
-} from "./core/Components.js";
+} from "./core/components/Components.js";
+import { MeshComponent } from "./core/components/MeshComponent.js";
 
+const FOV = 60;
 const WIDTH = 750;
 const HEIGHT = 600;
-const FOV = 60;
 
 window.onload = async () => {
   DisplayManager.createDisplay(WIDTH, HEIGHT);
   initializeRenderingContext();
 
-  let perspectiveMat = mat4.perspective(
-    mat4.create(),
-    glMatrix.toRadian(FOV),
-    WIDTH / HEIGHT,
-    0.001,
-    1000
-  );
+  let camera = new Camera(FOV, WIDTH / HEIGHT);
+  camera.addComponent(MOVEMENT_COMPONENT, new MovementControl(0.08));
+  camera.getComponent(TRANSFORM_COMPONENT).position[2] += 2.0;
 
-  let camera = new Camera();
-  let renderer = new Renderer(perspectiveMat);
+  let renderer = new Renderer();
+
+  let cubeMesh = await Mesh.loadFromURL("assets/meshes/cube.mesh");
+  let texMat = new TextureMaterial(
+    await Texture.loadFromURL("assets/textures/texture.jpg")
+  );
 
   let cube = new GameObject();
-  cube.addComponent(
-    MESH_COMPONENT,
-    await Mesh.loadFromURL("assets/meshes/cube.mesh")
-  );
-  cube.addComponent(
-    MATERIAL_COMPONENT,
-    new TextureMaterial(
-      await Texture.loadFromURL("assets/textures/texture.jpg")
-    )
-  );
-
-  camera.addComponent(
-    MOVEMENT_COMPONENT,
-    new MovementControl(0.08, camera)
-  );
-
-  camera.getComponent(TRANSFORM_COMPONENT).position[2] += 2.0;
+  cube.addComponent(MESH_COMPONENT, new MeshComponent(cubeMesh, texMat));
 
   function gameloop() {
     camera.update();

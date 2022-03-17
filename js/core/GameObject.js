@@ -1,7 +1,7 @@
-import { Transform } from "./Transform.js";
 import { uuidv4 } from "../utils/random.js";
-import { TRANSFORM_COMPONENT } from "./Components.js";
-import { ComponentManager } from "./ComponentManager.js";
+import { Transform } from "./components/Transform.js";
+import { TRANSFORM_COMPONENT } from "./components/Components.js";
+import { ComponentManager } from "./components/ComponentManager.js";
 
 export class GameObject extends ComponentManager {
   constructor() {

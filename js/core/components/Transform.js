@@ -1,7 +1,11 @@
 import { glMatrix, vec3, mat4 } from "https://cdn.skypack.dev/gl-matrix";
 
-export class Transform {
+import { BaseComponent } from "./BaseComponent.js";
+
+export class Transform extends BaseComponent {
   constructor(position, rotation, scale) {
+    super();
+
     this.position = position || vec3.fromValues(0, 0, 0);
     this.rotation = rotation || vec3.fromValues(0, 0, 0);
     this.scale = scale || vec3.fromValues(1, 1, 1);

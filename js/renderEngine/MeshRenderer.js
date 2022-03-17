@@ -8,8 +8,7 @@ import {
 } from "./shaders/ShaderUniforms.js";
 
 export class MeshRenderer {
-  constructor(projectionMatrix) {
-    this._projectionMatrix = projectionMatrix;
+  constructor() {
     this._shaderCache = new Map();
     this.modelLoader = new ModelLoader();
     this.textureLoader = new TextureLoader();
@@ -39,15 +38,15 @@ export class MeshRenderer {
     let uniforms = {
       [VIEW_MATRIX_UNIFORM]: camera.getViewMatrix(),
       [MODEL_MATRIX_UNIFORM]: transform.getModelMatrix(),
-      [PROJECTION_MATRIX_UNIFORM]: this._projectionMatrix,
+      [PROJECTION_MATRIX_UNIFORM]: camera.getProjectionMatrix(),
     };
 
     shader.loadUniforms(uniforms);
   }
 
-  render(mesh, material, transform, camera) {
-    let model = this._prepareMesh(mesh);
-    let shader = this._prepareMaterial(material);
+  render(mesh, transform, camera) {
+    let model = this._prepareMesh(mesh.mesh);
+    let shader = this._prepareMaterial(mesh.material);
     this._prepareUniforms(shader, transform, camera);
 
     shader.start();
