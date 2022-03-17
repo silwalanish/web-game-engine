@@ -16,7 +16,7 @@ export class MaterialShader extends Shader {
     #include <vertex_uv_attrib>
 
     void vertex() {
-      gl_Position = projMat * modelMat * vec4(POSITION, 1.0);
+      gl_Position = projMat * viewMat * modelMat * vec4(POSITION, 1.0);
       FRAG_UV = UV;
     }
     `;

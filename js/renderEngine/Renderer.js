@@ -18,7 +18,7 @@ export class Renderer {
     GL.enable(GL.DEPTH_TEST);
   }
 
-  render(gameObject) {
+  render(camera, gameObject) {
     if (
       gameObject.hasComponent(MESH_COMPONENT) &&
       gameObject.hasComponent(MATERIAL_COMPONENT) &&
@@ -27,7 +27,8 @@ export class Renderer {
       this._meshRenderer.render(
         gameObject.getComponent(MESH_COMPONENT),
         gameObject.getComponent(MATERIAL_COMPONENT),
-        gameObject.getComponent(TRANSFORM_COMPONENT)
+        gameObject.getComponent(TRANSFORM_COMPONENT),
+        camera
       );
     }
   }
