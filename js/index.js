@@ -6,11 +6,13 @@ import { Texture } from "./core/Texture.js";
 import { GameObject } from "./core/GameObject.js";
 import { Renderer } from "./renderEngine/Renderer.js";
 import { DisplayManager } from "./core/DisplayManager.js";
+import { MovementControl } from "./core/MovementControl.js";
 import { TextureMaterial } from "./materials/TextureMaterial.js";
 import { initializeRenderingContext } from "./renderEngine/GL.js";
 import {
   MATERIAL_COMPONENT,
   MESH_COMPONENT,
+  MOVEMENT_COMPONENT,
   TRANSFORM_COMPONENT,
 } from "./core/Components.js";
 
@@ -43,6 +45,11 @@ window.onload = async () => {
     new TextureMaterial(
       await Texture.loadFromURL("assets/textures/texture.jpg")
     )
+  );
+
+  camera.addComponent(
+    MOVEMENT_COMPONENT,
+    new MovementControl(0.08, camera)
   );
 
   camera.getComponent(TRANSFORM_COMPONENT).position[2] += 2.0;

@@ -1,3 +1,5 @@
+import { KeyboardManager } from "./KeyboardManager.js";
+
 export class DisplayManager {
   static CANVAS = null;
 
@@ -10,6 +12,9 @@ export class DisplayManager {
     if (!DisplayManager.CANVAS) {
       DisplayManager.CANVAS = document.createElement("canvas");
       document.body.appendChild(DisplayManager.CANVAS);
+
+      document.addEventListener("keydown", KeyboardManager.onKeyDown);
+      document.addEventListener("keyup", KeyboardManager.onKeyUp);
     }
 
     DisplayManager._updateDimensions(width, height);
