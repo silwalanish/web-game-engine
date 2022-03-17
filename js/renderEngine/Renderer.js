@@ -13,7 +13,9 @@ export class Renderer {
 
   prepare() {
     GL.clearColor(0.0, 0.0, 0.0, 1.0);
-    GL.clear(GL.COLOR_BUFFER_BIT);
+    GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+
+    GL.enable(GL.DEPTH_TEST);
   }
 
   render(gameObject) {

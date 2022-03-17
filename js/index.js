@@ -17,12 +17,12 @@ window.onload = async () => {
 
   let renderer = new Renderer();
 
-  let rectangle = new GameObject();
-  rectangle.addComponent(
+  let cube = new GameObject();
+  cube.addComponent(
     MESH_COMPONENT,
-    await Mesh.loadFromURL("assets/meshes/rectangle.mesh")
+    await Mesh.loadFromURL("assets/meshes/cube.mesh")
   );
-  rectangle.addComponent(
+  cube.addComponent(
     MATERIAL_COMPONENT,
     new TextureMaterial(
       await Texture.loadFromURL("assets/textures/texture.jpg")
@@ -30,11 +30,12 @@ window.onload = async () => {
   );
 
   function gameloop() {
-    rectangle.getComponent(TRANSFORM_COMPONENT).rotation[2] += 1;
-    rectangle.update();
+    cube.getComponent(TRANSFORM_COMPONENT).rotation[0] += 1;
+    cube.getComponent(TRANSFORM_COMPONENT).rotation[1] += 1;
+    cube.update();
 
     renderer.prepare();
-    renderer.render(rectangle);
+    renderer.render(cube);
 
     window.requestAnimationFrame(gameloop);
   }
