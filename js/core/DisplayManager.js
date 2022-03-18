@@ -1,3 +1,4 @@
+import { MouseManager } from "./MouseManager.js";
 import { KeyboardManager } from "./KeyboardManager.js";
 
 export class DisplayManager {
@@ -15,6 +16,29 @@ export class DisplayManager {
 
       document.addEventListener("keydown", KeyboardManager.onKeyDown);
       document.addEventListener("keyup", KeyboardManager.onKeyUp);
+
+      DisplayManager.CANVAS.addEventListener(
+        "mousedown",
+        MouseManager.onMouseDown
+      );
+      DisplayManager.CANVAS.addEventListener("mouseup", MouseManager.onMouseUp);
+      DisplayManager.CANVAS.addEventListener(
+        "mouseenter",
+        MouseManager.onMouseEnter
+      );
+      DisplayManager.CANVAS.addEventListener(
+        "mouseleave",
+        MouseManager.onMouseLeave
+      );
+      DisplayManager.CANVAS.addEventListener(
+        "mousemove",
+        MouseManager.onMouseMove
+      );
+
+      DisplayManager.CANVAS.addEventListener(
+        "dblclick",
+        DisplayManager.CANVAS.requestFullscreen
+      );
     }
 
     DisplayManager._updateDimensions(width, height);

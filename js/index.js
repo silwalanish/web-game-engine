@@ -10,6 +10,7 @@ import { ColorMaterial } from "./materials/ColorMaterial.js";
 import { initializeRenderingContext } from "./renderEngine/GL.js";
 import { MeshComponent } from "./core/components/MeshComponent.js";
 import { MovementControl } from "./core/components/MovementControl.js";
+import { LookAroundControl } from "./core/components/LookAroundControl.js";
 import {
   MESH_COMPONENT,
   MOVEMENT_COMPONENT,
@@ -25,7 +26,8 @@ window.onload = async () => {
   initializeRenderingContext();
 
   let camera = new Camera(FOV, WIDTH / HEIGHT);
-  camera.addComponent(MOVEMENT_COMPONENT, new MovementControl(0.08));
+  camera.addComponent(MOVEMENT_COMPONENT, new MovementControl(0.1));
+  camera.addComponent(MOVEMENT_COMPONENT, new LookAroundControl(0.05));
   camera.getComponent(TRANSFORM_COMPONENT).position[1] += 3.0;
   camera.getComponent(TRANSFORM_COMPONENT).position[2] += 10.0;
 

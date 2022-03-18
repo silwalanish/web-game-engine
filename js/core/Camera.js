@@ -14,6 +14,9 @@ export class Camera extends GameObject {
     this._fieldOfView = fieldOfView;
     this._viewMatrix = mat4.create();
     this._projectionMatrix = mat4.create();
+
+    // Rotate camera to face -Z axis.
+    this.getComponent(TRANSFORM_COMPONENT).rotation[1] = -90.0;
   }
 
   get fov() {
@@ -35,28 +38,17 @@ export class Camera extends GameObject {
   calculateViewMatrix() {
     let transform = this.getComponent(TRANSFORM_COMPONENT);
 
-    this._viewMatrix = mat4.create();
-    this._viewMatrix = mat4.rotateX(
-      mat4.create(),
+    this._viewMatrix = mat4.lookAt(
       this._viewMatrix,
-      glMatrix.toRadian(transform.rotation[0])
-    );
-    this._viewMatrix = mat4.rotateY(
-      mat4.create(),
-      this._viewMatrix,
-      glMatrix.toRadian(transform.rotation[1])
-    );
-
-    this._viewMatrix = mat4.translate(
-      mat4.create(),
-      this._viewMatrix,
-      vec3.negate(vec3.create(), transform.position)
+      transform.position,
+      vec3.add(vec3.create(), transform.position, transform.front),
+      transform.up
     );
   }
 
   calculateProjectionMatrix() {
     this._projectionMatrix = mat4.perspective(
-      mat4.create(),
+      this._projectionMatrix,
       glMatrix.toRadian(this._fieldOfView),
       this.aspect,
       CAMERA_NEAR,
