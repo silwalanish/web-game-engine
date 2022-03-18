@@ -1,9 +1,10 @@
 import { uuidv4 } from "../utils/random.js";
 
 export class Vertex {
-  constructor(position, uv) {
+  constructor(position, uv, normal) {
     this.position = position;
     this.uv = uv;
+    this.normal = normal || [0, 1, 0];
   }
 }
 
@@ -39,7 +40,7 @@ export class Mesh {
 
       let vertices = [];
       for (let vertexData of meshData.vertices) {
-        vertices.push(new Vertex(vertexData[0], vertexData[1]));
+        vertices.push(new Vertex(vertexData[0], vertexData[1], vertexData[2]));
       }
 
       Mesh.MESH_CACHE.set(url, new Mesh(vertices, meshData.faces));

@@ -1,4 +1,4 @@
-import { glMatrix, vec3, mat4 } from "https://cdn.skypack.dev/gl-matrix";
+import { glMatrix, vec3, mat3, mat4 } from "https://cdn.skypack.dev/gl-matrix";
 
 import { BaseComponent } from "./BaseComponent.js";
 
@@ -11,10 +11,13 @@ export class Transform extends BaseComponent {
     this.scale = scale || vec3.fromValues(1, 1, 1);
 
     this._modelMatrix = mat4.create();
-    this._calculateMatrix();
+    this._normalMatrix = mat3.create();
+
+    this._calculateModelMatrix();
+    this._calculateNormalMatrix();
   }
 
-  _calculateMatrix() {
+  _calculateModelMatrix() {
     this._modelMatrix = mat4.create();
     this._modelMatrix = mat4.translate(
       mat4.create(),
@@ -45,11 +48,23 @@ export class Transform extends BaseComponent {
     );
   }
 
+  _calculateNormalMatrix() {
+    let tempMat = mat4.invert(mat4.create(), this._modelMatrix);
+    tempMat = mat4.transpose(mat4.create(), tempMat);
+
+    this._normalMatrix = mat3.fromMat4(this._normalMatrix, tempMat);
+  }
+
   update() {
-    this._calculateMatrix();
+    this._calculateModelMatrix();
+    this._calculateNormalMatrix();
   }
 
   getModelMatrix() {
     return this._modelMatrix;
+  }
+
+  getNormalMatrix() {
+    return this._normalMatrix;
   }
 }

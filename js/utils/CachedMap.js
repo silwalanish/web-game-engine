@@ -7,7 +7,7 @@ export class CachedMap extends Map {
 
   set(key, value) {
     if (!_.isEqual(this.get(key), value)) {
-      super.set(key, _.clone(value));
+      super.set(key, _.cloneDeep(value));
 
       return true;
     }

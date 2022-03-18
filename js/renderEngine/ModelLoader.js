@@ -3,6 +3,7 @@ import _ from "https://cdn.skypack.dev/lodash";
 import { GL } from "./GL.js";
 import { RawModel } from "./RawModel.js";
 import {
+  NORMAL_ATTRIB_LOCATION,
   POSITION_ATTRIB_LOCATION,
   UV_ATTRIB_LOCATION,
 } from "./shaders/ShaderAttributes.js";
@@ -30,26 +31,29 @@ export class ModelLoader {
     if (!this._modelCache.has(mesh.id)) {
       let positions = [];
       let uvs = [];
+      let normals = [];
 
       for (let vertex of mesh.vertices) {
         positions.push(...vertex.position);
         uvs.push(...vertex.uv);
+        normals.push(...vertex.normal);
       }
 
       this._modelCache.set(
         mesh.id,
-        this.loadToVAO(positions, uvs, _.flatten(mesh.faces))
+        this.loadToVAO(positions, uvs, normals, _.flatten(mesh.faces))
       );
     }
 
     return this._modelCache.get(mesh.id);
   }
 
-  loadToVAO(positions, uvs, indices) {
+  loadToVAO(positions, uvs, normals, indices) {
     let vao = this.createVAO();
     this.bindIndexBuffer(indices);
     this.storeDataInAttibuteList(POSITION_ATTRIB_LOCATION, 3, positions);
     this.storeDataInAttibuteList(UV_ATTRIB_LOCATION, 2, uvs);
+    this.storeDataInAttibuteList(NORMAL_ATTRIB_LOCATION, 3, normals);
     this.unbindVAO();
 
     return new RawModel(vao, indices.length);
