@@ -17,17 +17,19 @@ export class Renderer {
     GL.enable(GL.DEPTH_TEST);
   }
 
-  render(camera, gameObject, lights) {
-    if (
-      gameObject.hasComponent(MESH_COMPONENT) &&
-      gameObject.hasComponent(TRANSFORM_COMPONENT)
-    ) {
-      this._meshRenderer.render(
-        gameObject.getComponent(MESH_COMPONENT),
-        gameObject.getComponent(TRANSFORM_COMPONENT),
-        camera,
-        lights
-      );
+  render(scene) {
+    for (let gameObject of scene.objects) {
+      if (
+        gameObject.hasComponent(MESH_COMPONENT) &&
+        gameObject.hasComponent(TRANSFORM_COMPONENT)
+      ) {
+        this._meshRenderer.render(
+          gameObject.getComponent(MESH_COMPONENT),
+          gameObject.getComponent(TRANSFORM_COMPONENT),
+          scene.camera,
+          scene.lights
+        );
+      }
     }
   }
 }
