@@ -3,9 +3,7 @@ import { MaterialMeta } from "./MaterialMeta.js";
 import { MaterialShader } from "../renderEngine/shaders/MaterialShader.js";
 import {
   CAMERA_POSITION_UNIFORM,
-  LIGHT_AMBIENT_COLOR_UNIFORM,
-  LIGHT_DIFFUSE_COLOR_UNIFORM,
-  LIGHT_POSITION_UNIFORM,
+  LIGHTS_UNIFORM,
 } from "../renderEngine/shaders/ShaderUniforms.js";
 
 export class PhongMaterial extends Material {
@@ -35,7 +33,7 @@ export class PhongMaterial extends Material {
 
         vec3 phongOutput = phongShading(diffuse, specular, shininess, 
           FRAG_NORMAL, FRAG_POSITION, ${CAMERA_POSITION_UNIFORM},
-          ${LIGHT_POSITION_UNIFORM}, ${LIGHT_AMBIENT_COLOR_UNIFORM}, ${LIGHT_DIFFUSE_COLOR_UNIFORM});
+          ${LIGHTS_UNIFORM});
 
         FRAG_COLOR = vec4(phongOutput, 1.0);
       }

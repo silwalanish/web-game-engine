@@ -1,3 +1,4 @@
+import { UniformMeta } from "../UniformMeta.js";
 import { POSITION_ATTRIB_LOCATION } from "../ShaderAttributes.js";
 import {
   CAMERA_POSITION_UNIFORM,
@@ -24,9 +25,9 @@ export default new Map([
         ["FRAG_POSITION", { type: "vec3" }],
       ]),
       uniformsMeta: new Map([
-        [PROJECTION_MATRIX_UNIFORM, { type: "mat4" }],
-        [VIEW_MATRIX_UNIFORM, { type: "mat4" }],
-        [MODEL_MATRIX_UNIFORM, { type: "mat4" }],
+        [PROJECTION_MATRIX_UNIFORM, new UniformMeta("mat4")],
+        [VIEW_MATRIX_UNIFORM, new UniformMeta("mat4")],
+        [MODEL_MATRIX_UNIFORM, new UniformMeta("mat4")],
       ]),
     },
   ],
@@ -44,7 +45,9 @@ export default new Map([
         ["FRAG_COLOR", { type: "vec4" }],
         ["FRAG_POSITION", { type: "vec3" }],
       ]),
-      uniformsMeta: new Map([[CAMERA_POSITION_UNIFORM, { type: "vec3" }]]),
+      uniformsMeta: new Map([
+        [CAMERA_POSITION_UNIFORM, new UniformMeta("vec3")],
+      ]),
     },
   ],
 ]);

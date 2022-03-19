@@ -41,13 +41,31 @@ window.onload = async () => {
     32
   );
 
-  let light = new Light([1.0, 0.0, 0.0], [0.2, 0.2, 0.1]);
+  let lights = [];
+
+  let light = new Light([0.0, 1.0, 0.0], [0.0, 0.0, 0.0]);
   light.addComponent(
     MESH_COMPONENT,
     new MeshComponent(cubeMesh, new ColorMaterial(light.diffuse))
   );
   light.getComponent(TRANSFORM_COMPONENT).position = [0, 7, 0];
   light.getComponent(TRANSFORM_COMPONENT).scale = [0.5, 0.5, 0.5];
+
+  let light2 = new Light([1.0, 0.0, 0.0], [0.0, 0.0, 0.0]);
+  light2.addComponent(
+    MESH_COMPONENT,
+    new MeshComponent(cubeMesh, new ColorMaterial(light2.diffuse))
+  );
+  light2.getComponent(TRANSFORM_COMPONENT).position = [8, 0, 0];
+  light2.getComponent(TRANSFORM_COMPONENT).scale = [0.5, 0.5, 0.5];
+
+  let light3 = new Light([0.0, 0.0, 1.0], [0.1, 0.1, 0.1]);
+  light3.addComponent(
+    MESH_COMPONENT,
+    new MeshComponent(cubeMesh, new ColorMaterial(light3.diffuse))
+  );
+  light3.getComponent(TRANSFORM_COMPONENT).position = [0, 0, 0];
+  light3.getComponent(TRANSFORM_COMPONENT).scale = [0.5, 0.5, 0.5];
 
   let cube = new GameObject();
   cube.addComponent(MESH_COMPONENT, new MeshComponent(cubeMesh, texMat));
@@ -67,6 +85,12 @@ window.onload = async () => {
   objects.push(cube2);
   objects.push(cube3);
   objects.push(light);
+  objects.push(light2);
+  objects.push(light3);
+
+  lights.push(light);
+  lights.push(light2);
+  lights.push(light3);
 
   let lightDir = 1;
 
@@ -78,17 +102,13 @@ window.onload = async () => {
       lightDir *= -1;
     }
 
-    cube.getComponent(TRANSFORM_COMPONENT).rotation[0] -= 1;
-    cube2.getComponent(TRANSFORM_COMPONENT).rotation[1] += 1;
-    cube3.getComponent(TRANSFORM_COMPONENT).rotation[2] += 1;
-
     for (let object of objects) {
       object.update();
     }
 
     renderer.prepare();
     for (let object of objects) {
-      renderer.render(camera, object, light);
+      renderer.render(camera, object, lights);
     }
 
     window.requestAnimationFrame(gameloop);

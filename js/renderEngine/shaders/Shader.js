@@ -96,4 +96,8 @@ export class Shader {
     this._uniformsLoader.setWebGLProgramId(this._webglShaderId);
     this._uniformsLoader.cacheUniformLocations(this._uniformsMeta);
   }
+
+  getUniformMeta(key) {
+    return this._uniformsMeta.get(key);
+  }
 }

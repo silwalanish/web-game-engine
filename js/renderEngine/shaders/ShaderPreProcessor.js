@@ -57,7 +57,7 @@ class PreProcessorDirective {
     return templateEngine(source, this._regex, (match) => {
       let key = match.groups.key.trim();
       if (meta.has(key)) {
-        return this.renderLine(key, meta) + "\n";
+        return this.renderLine(key, meta, match.groups) + "\n";
       } else {
         return this.onPropertyNotFound(key);
       }
@@ -92,21 +92,23 @@ class IncludePreProcessorDirective extends PreProcessorDirective {
 
 class UniformPreProcessorDirective extends PreProcessorDirective {
   constructor(regex) {
-    super(regex || /#uniform (?<key>.*?)\n/g);
+    super(regex || /#uniform (?<key>.*?)(\[(?<count>.*?)\]\n|\n)/g);
   }
 
   onPropertyNotFound(key) {
     throw new Error(`Couldn't find uniform property: ${key}`);
   }
 
-  renderLine(key, meta) {
-    return `uniform ${meta.get(key).type} ${key};`;
+  renderLine(key, meta, extraMatch) {
+    return `uniform ${meta.get(key).type} ${key}${
+      extraMatch.count ? `[${extraMatch.count}]` : ""
+    };`;
   }
 }
 
 class MaterialPreProcessorDirective extends UniformPreProcessorDirective {
   constructor() {
-    super(/#material (?<key>.*?)\n/g);
+    super(/#material (?<key>.*?)(\[(?<count>.*?)\]\n|\n)/g);
   }
 
   onPropertyNotFound(key) {

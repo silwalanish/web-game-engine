@@ -17,16 +17,28 @@ export default new Map([
           return specularFactor;
         }
 
-        vec3 phongShading(vec3 diffuse, vec3 specular, float shininess, vec3 normal, vec3 fragPos, vec3 cameraPos, vec3 lightPos, vec3 lightAmbient, vec3 lightDiffuse) {
-          vec3 lightDir = normalize(lightPos - fragPos);
-          vec3 viewDir = normalize(cameraPos - fragPos);
-          vec3 norm = normalize(normal);
+        vec3 calculateLight(vec3 diffuse, vec3 specular, float shininess, vec3 norm, vec3 fragPos, vec3 viewDir, Light light) {
+          vec3 lightDir = normalize(light.position - fragPos);
 
-          vec3 ambientComp = lightAmbient * diffuse;
-          vec3 diffuseComp = calculateDiffuse(norm, lightDir) * lightDiffuse * diffuse;
-          vec3 specularComp = calculateSpecular(shininess, norm, lightDir, viewDir) * lightDiffuse * specular;
+          vec3 ambientComp = light.ambient * diffuse;
+          vec3 diffuseComp = calculateDiffuse(norm, lightDir) * light.diffuse * diffuse;
+          vec3 specularComp = calculateSpecular(shininess, norm, lightDir, viewDir) * light.diffuse * specular;
 
           return ambientComp + diffuseComp + specularComp;
+        }
+
+        vec3 phongShading(vec3 diffuse, vec3 specular, float shininess, vec3 normal, vec3 fragPos, vec3 cameraPos, Light lights[MAX_NUM_OF_LIGHTS]) {
+          vec3 viewDir = normalize(cameraPos - fragPos);
+          vec3 norm = normalize(normal);
+          vec3 lightResult = vec3(0.0);
+
+          for(int i = 0; i < MAX_NUM_OF_LIGHTS; i++) {
+            if (lights[i].isActive == 1) {
+              lightResult += calculateLight(diffuse, specular, shininess, norm, fragPos, viewDir, lights[i]);
+            }
+          }
+
+          return lightResult;
         }
       `,
       attribsMeta: null,

@@ -3,14 +3,12 @@ import { ModelLoader } from "./ModelLoader.js";
 import { TextureLoader } from "./TextureLoader.js";
 import { TRANSFORM_COMPONENT } from "../core/components/Components.js";
 import {
-  CAMERA_POSITION_UNIFORM,
-  LIGHT_AMBIENT_COLOR_UNIFORM,
-  LIGHT_DIFFUSE_COLOR_UNIFORM,
-  LIGHT_POSITION_UNIFORM,
+  LIGHTS_UNIFORM,
+  VIEW_MATRIX_UNIFORM,
   MODEL_MATRIX_UNIFORM,
   NORMAL_MATRIX_UNIFORM,
+  CAMERA_POSITION_UNIFORM,
   PROJECTION_MATRIX_UNIFORM,
-  VIEW_MATRIX_UNIFORM,
 } from "./shaders/ShaderUniforms.js";
 
 export class MeshRenderer {
@@ -40,27 +38,38 @@ export class MeshRenderer {
     return shader;
   }
 
-  _prepareUniforms(shader, transform, camera, light) {
+  _prepareUniforms(shader, transform, camera, lights) {
     let uniforms = {
-      [LIGHT_AMBIENT_COLOR_UNIFORM]: light.ambient,
-      [LIGHT_DIFFUSE_COLOR_UNIFORM]: light.diffuse,
       [VIEW_MATRIX_UNIFORM]: camera.getViewMatrix(),
       [MODEL_MATRIX_UNIFORM]: transform.getModelMatrix(),
       [NORMAL_MATRIX_UNIFORM]: transform.getNormalMatrix(),
       [PROJECTION_MATRIX_UNIFORM]: camera.getProjectionMatrix(),
       [CAMERA_POSITION_UNIFORM]:
         camera.getComponent(TRANSFORM_COMPONENT).position,
-      [LIGHT_POSITION_UNIFORM]:
-        light.getComponent(TRANSFORM_COMPONENT).position,
     };
+
+    let lightUniformMeta = shader.getUniformMeta(LIGHTS_UNIFORM);
+    if (lightUniformMeta) {
+      for (let i = 0; i < lightUniformMeta.count; i++) {
+        if (lights[i]) {
+          uniforms[`${LIGHTS_UNIFORM}[${i}].isActive`] = 1;
+          uniforms[`${LIGHTS_UNIFORM}[${i}].ambient`] = lights[i].ambient;
+          uniforms[`${LIGHTS_UNIFORM}[${i}].diffuse`] = lights[i].diffuse;
+          uniforms[`${LIGHTS_UNIFORM}[${i}].position`] =
+            lights[i].getComponent(TRANSFORM_COMPONENT).position;
+        } else {
+          uniforms[`${LIGHTS_UNIFORM}[${i}].isActive`] = 0;
+        }
+      }
+    }
 
     shader.loadUniforms(uniforms);
   }
 
-  render(mesh, transform, camera, light) {
+  render(mesh, transform, camera, lights) {
     let model = this._prepareMesh(mesh.mesh);
     let shader = this._prepareMaterial(mesh.material);
-    this._prepareUniforms(shader, transform, camera, light);
+    this._prepareUniforms(shader, transform, camera, lights);
 
     shader.start();
     shader.loadUniformsToGPU();
