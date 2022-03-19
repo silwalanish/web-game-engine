@@ -3,10 +3,23 @@ import { KeyboardManager } from "./KeyboardManager.js";
 
 export class DisplayManager {
   static CANVAS = null;
+  static _IS_FULLSCREEN = false;
 
   static _updateDimensions(width, height) {
     DisplayManager.CANVAS.width = width;
     DisplayManager.CANVAS.height = height;
+  }
+
+  static _requestFullScreen() {
+    DisplayManager.CANVAS.requestFullscreen();
+  }
+
+  static _onFullscreen() {
+    DisplayManager._IS_FULLSCREEN = document.fullscreenElement ? true : false;
+  }
+
+  static isFullscreen() {
+    return DisplayManager._IS_FULLSCREEN;
   }
 
   static createDisplay(width, height) {
@@ -36,8 +49,13 @@ export class DisplayManager {
       );
 
       DisplayManager.CANVAS.addEventListener(
+        "fullscreenchange",
+        DisplayManager._onFullscreen
+      );
+
+      DisplayManager.CANVAS.addEventListener(
         "dblclick",
-        DisplayManager.CANVAS.requestFullscreen
+        DisplayManager._requestFullScreen
       );
     }
 
