@@ -2,7 +2,6 @@ import { vec2 } from "https://cdn.skypack.dev/gl-matrix";
 
 import { MouseManager } from "../MouseManager.js";
 import { BaseComponent } from "./BaseComponent.js";
-import { DisplayManager } from "../DisplayManager.js";
 import { TRANSFORM_COMPONENT } from "./Components.js";
 
 export class LookAroundControl extends BaseComponent {
@@ -18,7 +17,7 @@ export class LookAroundControl extends BaseComponent {
     let transform = this.parent.getComponent(TRANSFORM_COMPONENT);
     if (
       transform &&
-      (MouseManager.isLeftMouseButtonDown() || DisplayManager.isFullscreen())
+      MouseManager.isLeftMouseButtonDown()
     ) {
       this.delta = vec2.sub(vec2.create(), MouseManager.POSITION, this.old_position);
 

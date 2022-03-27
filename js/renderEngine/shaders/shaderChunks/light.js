@@ -10,9 +10,12 @@ function unrollLightUniforms(count) {
       `${LIGHTS_UNIFORM}[${i}].isActive`,
       new UniformMeta("int", false, 0)
     );
+    meta.set(`${LIGHTS_UNIFORM}[${i}].type`, new UniformMeta("int", false, 0));
     meta.set(`${LIGHTS_UNIFORM}[${i}].position`, new UniformMeta("vec3"));
+    meta.set(`${LIGHTS_UNIFORM}[${i}].orientation`, new UniformMeta("vec3"));
     meta.set(`${LIGHTS_UNIFORM}[${i}].ambient`, new UniformMeta("vec3"));
     meta.set(`${LIGHTS_UNIFORM}[${i}].diffuse`, new UniformMeta("vec3"));
+    meta.set(`${LIGHTS_UNIFORM}[${i}].attenuation`, new UniformMeta("vec3"));
   }
 
   return meta;
@@ -26,14 +29,21 @@ export default new Map([
         #define MAX_NUM_OF_LIGHTS ${MAX_NUM_OF_LIGHTS}
 
         struct Light {
+          int type;
           int isActive;
 
           vec3 position;
+          vec3 orientation;
           vec3 diffuse;
           vec3 ambient;
+          vec3 attenuation;
         };
 
         #uniform ${LIGHTS_UNIFORM}[MAX_NUM_OF_LIGHTS]
+
+        float calculateAttenuation(float d, vec3 attenuation) {
+          return 1.0 / (attenuation.x + attenuation.y * d + attenuation.z * d * d);
+        }
       `,
       attribsMeta: null,
       uniformsMeta: new Map([

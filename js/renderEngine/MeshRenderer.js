@@ -53,10 +53,15 @@ export class MeshRenderer {
       for (let i = 0; i < lightUniformMeta.count; i++) {
         if (lights[i]) {
           uniforms[`${LIGHTS_UNIFORM}[${i}].isActive`] = 1;
+          uniforms[`${LIGHTS_UNIFORM}[${i}].type`] = lights[i].type;
+          uniforms[`${LIGHTS_UNIFORM}[${i}].ambient`] = lights[i].ambient;
           uniforms[`${LIGHTS_UNIFORM}[${i}].ambient`] = lights[i].ambient;
           uniforms[`${LIGHTS_UNIFORM}[${i}].diffuse`] = lights[i].diffuse;
-          uniforms[`${LIGHTS_UNIFORM}[${i}].position`] =
-            lights[i].getComponent(TRANSFORM_COMPONENT).position;
+          uniforms[`${LIGHTS_UNIFORM}[${i}].attenuation`] =
+            lights[i].attenuation;
+          uniforms[`${LIGHTS_UNIFORM}[${i}].position`] = lights[i].position;
+          uniforms[`${LIGHTS_UNIFORM}[${i}].orientation`] =
+            lights[i].orientation;
         } else {
           uniforms[`${LIGHTS_UNIFORM}[${i}].isActive`] = 0;
         }
